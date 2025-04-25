@@ -1,0 +1,18 @@
+body {
+    padding: 20px;
+    background-color: #f8f9fa;
+}
+.question-card {
+    margin-bottom: 20px;
+    display: none;
+}
+.question-card.active {
+    display: block;
+}
+.progress {
+    height: 10px;
+    margin-bottom: 20px;
+}
+.result-container {
+    display: none;
+}

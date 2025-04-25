@@ -1,0 +1,495 @@
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Космический тест по HTML</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Orbitron', sans-serif;
+            background-color: #0a0a2a;
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .star {
+            position: absolute;
+            background-color: #fff;
+            border-radius: 50%;
+            animation: twinkle var(--duration) infinite ease-in-out;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+        
+        h1 {
+            color: #4fc3f7;
+            text-shadow: 0 0 10px rgba(79, 195, 247, 0.7);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { text-shadow: 0 0 10px rgba(79, 195, 247, 0.7); }
+            50% { text-shadow: 0 0 20px rgba(79, 195, 247, 1); }
+        }
+        
+        .quiz-container {
+            background: rgba(10, 20, 50, 0.7);
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(79, 195, 247, 0.3);
+            backdrop-filter: blur(5px);
+            border: 1px solid #4fc3f7;
+            transition: all 0.3s ease;
+        }
+        
+        .quiz-container:hover {
+            box-shadow: 0 0 30px rgba(79, 195, 247, 0.5);
+        }
+        
+        .question {
+            color: #4fc3f7;
+        }
+        
+        .option {
+            background: rgba(20, 40, 80, 0.7);
+            border: 1px solid #3a5a80;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .option:hover {
+            background: rgba(30, 60, 120, 0.7);
+            border-color: #4fc3f7;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(79, 195, 247, 0.3);
+        }
+        
+        .option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(79, 195, 247, 0.2), transparent);
+            transition: 0.5s;
+        }
+        
+        .option:hover::before {
+            left: 100%;
+        }
+        
+        .option.selected {
+            background: rgba(79, 195, 247, 0.2);
+            border-color: #4fc3f7;
+        }
+        
+        .option.correct {
+            background: rgba(76, 175, 80, 0.3);
+            border-color: #4caf50;
+        }
+        
+        .option.incorrect {
+            background: rgba(244, 67, 54, 0.3);
+            border-color: #f44336;
+        }
+        
+        .progress-container {
+            background: rgba(20, 40, 80, 0.7);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #3a5a80;
+        }
+        
+        .progress-bar {
+            background: linear-gradient(90deg, #4fc3f7, #2196f3);
+            transition: width 0.5s ease;
+            position: relative;
+        }
+        
+        .progress-text {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #fff;
+            font-size: 0.8rem;
+        }
+        
+        .btn-quiz {
+            background: linear-gradient(135deg, #4fc3f7, #2196f3);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 10px rgba(33, 150, 243, 0.3);
+        }
+        
+        .btn-quiz:hover {
+            background: linear-gradient(135deg, #2196f3, #4fc3f7);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(33, 150, 243, 0.4);
+            color: white;
+        }
+        
+        .btn-quiz:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .result-emoji {
+            font-size: 5rem;
+            animation: bounce 1s infinite alternate;
+        }
+        
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-20px); }
+        }
+        
+        .firework {
+            position: fixed;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            box-shadow: 0 0 10px 5px rgba(255, 255, 255, 0.8);
+            animation: explode 1s ease-out forwards;
+            opacity: 0;
+            z-index: 10;
+        }
+        
+        @keyframes explode {
+            0% { transform: scale(0); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: scale(20); opacity: 0; }
+        }
+        
+        .comet {
+            position: fixed;
+            width: 5px;
+            height: 5px;
+            background: linear-gradient(90deg, transparent, #4fc3f7);
+            border-radius: 50%;
+            animation: cometFly linear;
+            z-index: -1;
+        }
+        
+        @keyframes cometFly {
+            0% { transform: translate(-100px, -100px); opacity: 1; }
+            100% { transform: translate(calc(100vw + 100px), calc(100vh + 100px)); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h1 class="text-center mb-4">Космический тест по HTML</h1>
+                
+                <div class="quiz-container p-4 mb-4" id="quiz">
+                    <div class="progress-container mb-4">
+                        <div class="progress-bar" id="progress-bar" role="progressbar" style="width: 0%; height: 20px;">
+                            <span class="progress-text" id="progress-text">0/10</span>
+                        </div>
+                    </div>
+                    
+                    <h2 class="question mb-4" id="question"></h2>
+                    
+                    <div class="options row g-3 mb-4" id="options"></div>
+                    
+                    <button class="btn btn-quiz d-block mx-auto py-2 px-4" id="next-btn" disabled>Далее</button>
+                </div>
+                
+                <div class="result-container text-center p-4 d-none" id="result-container">
+                    <div class="result-emoji mb-3" id="result-emoji"></div>
+                    <h2 class="result-score mb-3" id="result-score"></h2>
+                    <p class="mb-4" id="result-message"></p>
+                    <button class="btn btn-quiz py-2 px-4" id="restart-btn">Пройти снова</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Создание звездного неба
+        const starsContainer = document.getElementById('stars');
+        const starCount = 200;
+        
+        for (let i = 0; i < starCount; i++) {
+            const star = document.createElement('div');
+            star.classList.add('star');
+            
+            const size = Math.random() * 3;
+            star.style.width = `${size}px`;
+            star.style.height = `${size}px`;
+            
+            star.style.left = `${Math.random() * 100}%`;
+            star.style.top = `${Math.random() * 100}%`;
+            
+            star.style.setProperty('--duration', `${Math.random() * 3 + 2}s`);
+            
+            starsContainer.appendChild(star);
+        }
+        
+        // Создание комет
+        function createComet() {
+            const comet = document.createElement('div');
+            comet.classList.add('comet');
+            
+            comet.style.left = `${Math.random() * 20}%`;
+            comet.style.top = `${Math.random() * 20}%`;
+            
+            const size = Math.random() * 3 + 2;
+            comet.style.width = `${size}px`;
+            comet.style.height = `${size}px`;
+            
+            comet.style.animationDuration = `${Math.random() * 5 + 5}s`;
+            
+            document.body.appendChild(comet);
+            
+            setTimeout(() => {
+                comet.remove();
+            }, 10000);
+        }
+        
+        setInterval(createComet, 3000);
+        
+        // Данные теста
+        const questions = [
+            {
+                question: "1. Какой тег используется для создания заголовка первого уровня?",
+                options: ["<heading>", "<h1>", "<head>", "<header>"],
+                answer: 1
+            },
+            {
+                question: "2. Какой тег используется для вставки изображения?",
+                options: ["<img>", "<image>", "<picture>", "<src>"],
+                answer: 0
+            },
+            {
+                question: "3. Какой тег создает абзац?",
+                options: ["<abzac>", "<p>", "<para>", "<paragraph>"],
+                answer: 1
+            },
+            {
+                question: "4. Какой тег используется для создания ненумерованного списка?",
+                options: ["<ol>", "<dl>", "<ul>", "<list>"],
+                answer: 2
+            },
+            {
+                question: "5. Какой атрибут используется для задания альтернативного текста изображения?",
+                options: ["title", "src", "alt", "href"],
+                answer: 2
+            },
+            {
+                question: "6. Какой тег используется для создания гиперссылки?",
+                options: ["<link>", "<a>", "<href>", "<url>"],
+                answer: 1
+            },
+            {
+                question: "7. Какой тег определяет основное содержимое документа?",
+                options: ["<main>", "<body>", "<content>", "<html>"],
+                answer: 0
+            },
+            {
+                question: "8. Какой тег используется для вставки строки кода?",
+                options: ["<code>", "<script>", "<pre>", "<kbd>"],
+                answer: 0
+            },
+            {
+                question: "9. Какой тег создает таблицу?",
+                options: ["<table>", "<tab>", "<tr>", "<grid>"],
+                answer: 0
+            },
+            {
+                question: "10. Какой тег используется для создания формы?",
+                options: ["<form>", "<input>", "<submit>", "<action>"],
+                answer: 0
+            }
+        ];
+        
+        // Элементы DOM
+        const quizContainer = document.getElementById('quiz');
+        const questionElement = document.getElementById('question');
+        const optionsElement = document.getElementById('options');
+        const nextButton = document.getElementById('next-btn');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const resultContainer = document.getElementById('result-container');
+        const resultEmoji = document.getElementById('result-emoji');
+        const resultScore = document.getElementById('result-score');
+        const resultMessage = document.getElementById('result-message');
+        const restartButton = document.getElementById('restart-btn');
+        
+        // Переменные теста
+        let currentQuestion = 0;
+        let score = 0;
+        let selectedOption = null;
+        
+        // Загрузка вопроса
+        function loadQuestion() {
+            const question = questions[currentQuestion];
+            questionElement.textContent = question.question;
+            
+            optionsElement.innerHTML = '';
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.classList.add('option', 'col-12', 'p-3');
+                optionElement.textContent = option;
+                optionElement.dataset.index = index;
+                optionElement.addEventListener('click', selectOption);
+                optionsElement.appendChild(optionElement);
+            });
+            
+            nextButton.disabled = true;
+            updateProgress();
+        }
+        
+        // Выбор варианта ответа
+        function selectOption(e) {
+            const selectedElement = e.target;
+            
+            // Сброс предыдущего выбора
+            if (selectedOption !== null) {
+                const options = document.querySelectorAll('.option');
+                options[selectedOption].classList.remove('selected');
+            }
+            
+            selectedOption = parseInt(selectedElement.dataset.index);
+            selectedElement.classList.add('selected');
+            nextButton.disabled = false;
+        }
+        
+        // Проверка ответа и переход к следующему вопросу
+        function nextQuestion() {
+            if (selectedOption === null) return;
+            
+            const question = questions[currentQuestion];
+            const options = document.querySelectorAll('.option');
+            
+            // Проверка ответа
+            if (selectedOption === question.answer) {
+                options[selectedOption].classList.add('correct');
+                score++;
+            } else {
+                options[selectedOption].classList.add('incorrect');
+                options[question.answer].classList.add('correct');
+            }
+            
+            // Отключение кликов по вариантам
+            options.forEach(option => {
+                option.style.pointerEvents = 'none';
+            });
+            
+            nextButton.disabled = true;
+            
+            // Переход к следующему вопросу или завершение теста
+            setTimeout(() => {
+                currentQuestion++;
+                selectedOption = null;
+                
+                if (currentQuestion < questions.length) {
+                    loadQuestion();
+                } else {
+                    showResult();
+                }
+            }, 1000);
+        }
+        
+        // Обновление прогресс-бара
+        function updateProgress() {
+            const progress = ((currentQuestion) / questions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+            progressText.textContent = `${currentQuestion}/${questions.length}`;
+        }
+        
+        // Показ результата
+        function showResult() {
+            quizContainer.classList.add('d-none');
+            resultContainer.classList.remove('d-none');
+            
+            const percentage = Math.round((score / questions.length) * 100);
+            resultScore.textContent = `Ваш результат: ${percentage}%`;
+            
+            if (percentage >= 80) {
+                resultEmoji.textContent = '🚀';
+                resultMessage.textContent = 'Превосходно! Вы настоящий мастер HTML!';
+                createFireworks();
+            } else if (percentage >= 50) {
+                resultEmoji.textContent = '🛰️';
+                resultMessage.textContent = 'Хороший результат! Продолжайте изучать HTML!';
+            } else {
+                resultEmoji.textContent = '😢';
+                resultMessage.textContent = 'Попробуйте еще раз! Вы можете лучше!';
+            }
+        }
+        
+        // Создание фейерверка
+        function createFireworks() {
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const firework = document.createElement('div');
+                    firework.classList.add('firework');
+                    
+                    firework.style.left = `${Math.random() * 100}%`;
+                    firework.style.top = `${Math.random() * 100}%`;
+                    
+                    // Случайный цвет фейерверка
+                    const colors = ['#4fc3f7', '#f44336', '#4caf50', '#ffeb3b', '#9c27b0'];
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+                    firework.style.boxShadow = `0 0 10px 5px ${color}`;
+                    
+                    document.body.appendChild(firework);
+                    
+                    setTimeout(() => {
+                        firework.remove();
+                    }, 1000);
+                }, i * 200);
+            }
+        }
+        
+        // Перезапуск теста
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            selectedOption = null;
+            
+            quizContainer.classList.remove('d-none');
+            resultContainer.classList.add('d-none');
+            
+            loadQuestion();
+        }
+        
+        // Обработчики событий
+        nextButton.addEventListener('click', nextQuestion);
+        restartButton.addEventListener('click', restartQuiz);
+        
+        // Запуск теста
+        loadQuestion();
+    </script>
+</body>
+</html>
